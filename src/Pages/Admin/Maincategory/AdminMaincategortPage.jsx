@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
+import DataTable from 'datatables.net-dt';
+import "datatables.net-dt/css/dataTables.dataTables.min.css"
 
 import AdminSidebar from '../../../Components/Admin/AdminSidebar'
 
@@ -54,7 +56,7 @@ export default function AdminMaincategoryPage() {
     }
 
     useEffect(() => {
-        (async () => {
+        let time = (async () => {
             let response = await fetch(`${import.meta.env.VITE_APP_BACKEND_SERVER}/maincategory`, {
                 method: "GET",
                 headers: {
@@ -63,7 +65,14 @@ export default function AdminMaincategoryPage() {
             })
             response = await response.json()
             setData(response)
+
+            let time = setTimeout(() => {
+                new DataTable('#myTable')
+            }, 500)
+            return time
         })()
+
+        return () => clearTimeout(time)
     }, [])
     return (
         <>
@@ -77,7 +86,7 @@ export default function AdminMaincategoryPage() {
                             <Link to="/admin/maincategory/create"><i className='bi bi-plus text-light float-end'></i></Link>
                         </h5>
                         <div className="table-responsive">
-                            <table className='table table-bordered'>
+                            <table className='table table-bordered' id='myTable'>
                                 <thead>
                                     <tr>
                                         <th>Id</th>
@@ -93,7 +102,11 @@ export default function AdminMaincategoryPage() {
                                         return <tr key={index}>
                                             <td>{item.id}</td>
                                             <td>{item.name}</td>
-                                            <td>{item.pic}</td>
+                                            <td>
+                                                <a href={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item.pic}`} target='_blank'>
+                                                    <img src={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item.pic}`} height={70} width={80} alt="" />
+                                                </a>
+                                            </td>
                                             <td>{item.status ? "Active" : "Inactive"}</td>
                                             <td>
                                                 <Link className='btn btn-primary' to={`/admin/maincategory/update/${item.id}`}>
