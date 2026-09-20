@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
+
+
 import Swal from 'sweetalert2'
 
 import DataTable from 'datatables.net-dt';
@@ -7,9 +10,12 @@ import "datatables.net-dt/css/dataTables.dataTables.min.css"
 
 import AdminSidebar from '../../../Components/Admin/AdminSidebar'
 
-
+import { deleteMaincategory, getMaincategory } from "../../../Redux/ActionCreators/MaincategoryActionCreators"
 export default function AdminMaincategoryPage() {
     let [data, setData] = useState([])
+
+    let MaincategoryStateData = useSelector(state => state.MaincategoryStateData)
+    let dispatch = useDispatch()
 
     function deleteRecord(id) {
         const swalWithBootstrapButtons = Swal.mixin({
@@ -27,16 +33,10 @@ export default function AdminMaincategoryPage() {
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "No, cancel!",
             reverseButtons: true
-        }).then(async (result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
 
-                let response = await fetch(`${import.meta.env.VITE_APP_BACKEND_SERVER}/maincategory/${id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "content-type": "application/json"
-                    }
-                })
-                response = await response.json()
+                dispatch(deleteMaincategory({ id: id }))
                 setData(data.filter(x => x.id !== id))
 
                 swalWithBootstrapButtons.fire({
@@ -56,15 +56,11 @@ export default function AdminMaincategoryPage() {
     }
 
     useEffect(() => {
-        let time = (async () => {
-            let response = await fetch(`${import.meta.env.VITE_APP_BACKEND_SERVER}/maincategory`, {
-                method: "GET",
-                headers: {
-                    "content-type": "application/json"
-                }
-            })
-            response = await response.json()
-            setData(response)
+        let time = (() => {
+            dispatch(getMaincategory())
+            console.log(MaincategoryStateData)
+            if (MaincategoryStateData.length)
+                setData(MaincategoryStateData)
 
             let time = setTimeout(() => {
                 new DataTable('#myTable')
@@ -73,7 +69,7 @@ export default function AdminMaincategoryPage() {
         })()
 
         return () => clearTimeout(time)
-    }, [])
+    }, [MaincategoryStateData.length])
     return (
         <>
             <div className="container-fluid my-3">
