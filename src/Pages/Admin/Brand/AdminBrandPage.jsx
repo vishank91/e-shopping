@@ -10,11 +10,11 @@ import "datatables.net-dt/css/dataTables.dataTables.min.css"
 
 import AdminSidebar from '../../../Components/Admin/AdminSidebar'
 
-import { deleteMaincategory, getMaincategory } from "../../../Redux/ActionCreators/MaincategoryActionCreators"
-export default function AdminMaincategoryPage() {
+import { deleteBrand, getBrand } from "../../../Redux/ActionCreators/BrandActionCreators"
+export default function AdminBrandPage() {
     let [data, setData] = useState([])
 
-    let MaincategoryStateData = useSelector(state => state.MaincategoryStateData)
+    let BrandStateData = useSelector(state => state.BrandStateData)
     let dispatch = useDispatch()
 
     function deleteRecord(id) {
@@ -36,7 +36,7 @@ export default function AdminMaincategoryPage() {
         }).then((result) => {
             if (result.isConfirmed) {
 
-                dispatch(deleteMaincategory({ id: id }))
+                dispatch(deleteBrand({ id: id }))
                 setData(data.filter(x => x.id !== id))
 
                 swalWithBootstrapButtons.fire({
@@ -57,10 +57,9 @@ export default function AdminMaincategoryPage() {
 
     useEffect(() => {
         let time = (() => {
-            dispatch(getMaincategory())
-            console.log(MaincategoryStateData)
-            if (MaincategoryStateData.length)
-                setData(MaincategoryStateData)
+            dispatch(getBrand())
+            if (BrandStateData.length)
+                setData(BrandStateData)
 
             let time = setTimeout(() => {
                 new DataTable('#myTable')
@@ -69,7 +68,7 @@ export default function AdminMaincategoryPage() {
         })()
 
         return () => clearTimeout(time)
-    }, [MaincategoryStateData.length])
+    }, [BrandStateData.length])
     return (
         <>
             <div className="container-fluid my-3">
@@ -78,8 +77,8 @@ export default function AdminMaincategoryPage() {
                         <AdminSidebar />
                     </div>
                     <div className="col-md-9">
-                        <h5 className='bg-primary p-2 text-center text-light'>Maincategory
-                            <Link to="/admin/maincategory/create"><i className='bi bi-plus text-light float-end'></i></Link>
+                        <h5 className='bg-primary p-2 text-center text-light'>Brand
+                            <Link to="/admin/brand/create"><i className='bi bi-plus text-light float-end'></i></Link>
                         </h5>
                         <div className="table-responsive">
                             <table className='table table-bordered' id='myTable'>
@@ -105,7 +104,7 @@ export default function AdminMaincategoryPage() {
                                             </td>
                                             <td>{item.status ? "Active" : "Inactive"}</td>
                                             <td>
-                                                <Link className='btn btn-primary' to={`/admin/maincategory/update/${item.id}`}>
+                                                <Link className='btn btn-primary' to={`/admin/brand/update/${item.id}`}>
                                                     <i className='bi bi-pencil-square'></i>
                                                 </Link>
                                             </td>

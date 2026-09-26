@@ -22,7 +22,7 @@ function* updateSaga(action) {                                                  
     // yield put({ type: UPDATE_MAINCATEGORY_RED, payload: response })
 }
 
-function* deleteSaga() {                                                                       //Worker Saga
+function* deleteSaga(action) {                                                                       //Worker Saga
     yield deleteRecord("maincategory", action.payload)
     yield put({ type: DELETE_MAINCATEGORY_RED, payload: action.payload })
 }

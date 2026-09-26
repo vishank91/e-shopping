@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import AdminSidebar from '../../../Components/Admin/AdminSidebar'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+
+
+import AdminSidebar from '../../../Components/Admin/AdminSidebar'
+
 import TextValidator from '../../../Validators/TextValidator'
 import ImageValidator from '../../../Validators/ImageValidator'
 
+import { getMaincategory, updateMaincategory } from "../../../Redux/ActionCreators/MaincategoryActionCreators"
 export default function AdminMaincategoryUpdatePage() {
     let { id } = useParams()
     let [data, setData] = useState({
@@ -19,7 +24,8 @@ export default function AdminMaincategoryUpdatePage() {
 
     let [show, setShow] = useState(false)
 
-    let [MaincategoryStateData, setMaincategoryStateData] = useState([])
+    let MaincategoryStateData = useSelector(state => state.MaincategoryStateData)
+    let dispatch = useDispatch()
 
     let navigate = useNavigate()
 
@@ -32,43 +38,43 @@ export default function AdminMaincategoryUpdatePage() {
         setErrorMessage({ ...errorMessage, [name]: name === "pic" ? ImageValidator(e) : TextValidator(e) })
     }
 
-    async function postData(e) {
+    function postData(e) {
         e.preventDefault()
         let error = Object.values(errorMessage).find(x => x != "")
         if (error)
             setShow(true)
         else {
-            let item = MaincategoryStateData.find(x => x.id!==id && x.name?.toLocaleLowerCase() === data.name?.toLocaleLowerCase())
+            let item = MaincategoryStateData.find(x => x.id !== id && x.name?.toLocaleLowerCase() === data.name?.toLocaleLowerCase())
             if (item) {
                 setShow(true)
                 setErrorMessage({ ...errorMessage, name: "Maincategory With This Name is Already Exist" })
                 return
             }
-            let response = await fetch(`${import.meta.env.VITE_APP_BACKEND_SERVER}/maincategory/${id}`, {
-                method: "PUT",
-                headers: {
-                    "content-type": "application/json"
-                },
-                body: JSON.stringify({ ...data })
-            })
-            response = await response.json()
+            dispatch(updateMaincategory({ ...data }))
+
+            // let formData = new FormData()
+            // formData.append("id",data.id)
+            // formData.append("name",data.name)
+            // formData.append("pic",data.pic)
+            // formData.append("status",data.status)
+            // dispatch(updateMaincategory(formData))
+
             navigate("/admin/maincategory")
         }
     }
 
     useEffect(() => {
-        (async () => {
-            let response = await fetch(`${import.meta.env.VITE_APP_BACKEND_SERVER}/maincategory`)
-            response = await response.json()
-            setMaincategoryStateData(response)
-
-            let item = response.find(x => x.id === id)
-            if (item)
-                setData({ ...data, ...item })
-            else
-                navigate("/admin/maincategory")
+        (() => {
+            dispatch(getMaincategory())
+            if (MaincategoryStateData.length) {
+                let item = MaincategoryStateData.find(x => x.id === id)
+                if (item)
+                    setData({ ...data, ...item })
+                else
+                    navigate("/admin/maincategory")
+            }
         })()
-    }, [])
+    }, [MaincategoryStateData.length])
     return (
         <>
             <div className="container-fluid my-3">
