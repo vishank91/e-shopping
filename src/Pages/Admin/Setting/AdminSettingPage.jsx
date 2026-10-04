@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
 
 import RichTextEditor from '../../../rte/RichTextEditor';
 import { createStructuredContent } from '../../../rte/richTextEditorBridge';
@@ -39,7 +40,7 @@ export default function AdminSettingPage() {
         let { name, value } = e.target
         setData({ ...data, [name]: value })
     }
-    function postData() {
+    function postData(e) {
         e.preventDefault()
         let item = {
             ...data,
@@ -51,6 +52,8 @@ export default function AdminSettingPage() {
             dispatch(updateSetting({ ...item }))
         else
             dispatch(createSetting({ ...item }))
+
+        toast("Record Has Been Updated!!!")
     }
 
     function syncDocument(documentModel, nextHtml, option) {
@@ -67,7 +70,7 @@ export default function AdminSettingPage() {
         (() => {
             dispatch(getSetting())
             if (SettingStateData.length) {
-                setData({ ...SettingStateData[0] })
+                setData({ ...data, ...SettingStateData[0] })
                 setTimeout(() => {
                     syncDocument(createStructuredContent(""), SettingStateData[0].privacyPolicy ?? "", "privacyPolicy");
                     syncDocument(createStructuredContent(""), SettingStateData[0].termsAndConditions ?? "", "termsAndConditions");
@@ -78,6 +81,7 @@ export default function AdminSettingPage() {
     }, [SettingStateData.length])
     return (
         <>
+            <ToastContainer />
             <div className="container-fluid my-3">
                 <div className="row">
                     <div className="col-md-3">
@@ -91,7 +95,7 @@ export default function AdminSettingPage() {
 
                                 <div className="col-md-6 mb-3">
                                     <label>SiteName</label>
-                                    <input type="text" name="name" value={data.name} onChange={getInputData} placeholder='Site Name' className='form-control border-primary' />
+                                    <input type="text" name="siteName" value={data.siteName} onChange={getInputData} placeholder='Site Name' className='form-control border-primary' />
                                 </div>
 
                                 <div className="col-md-6 mb-3">
@@ -169,7 +173,7 @@ export default function AdminSettingPage() {
                                 <div className='col-12 mb-3'>
                                     <label>Refund Policy</label>
                                     <RichTextEditor
-                                        ref={editorRefPrivacyPolicy}
+                                        ref={editorRefRefundPolicy}
                                         className="editor-host border border-primary"
                                         value={refundPolicy}
                                         onChange={(nextHtml, editor) => syncDocument(editor.getJSON(), nextHtml, "refundPolicy")}
