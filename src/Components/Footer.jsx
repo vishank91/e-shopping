@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import { getSetting } from "../Redux/ActionCreators/SettingActionCreators"
 export default function Footer() {
-    let [setttingData, setSettingData] = useState({
+    let [settingData, setSettingData] = useState({
         siteName: import.meta.env.VITE_APP_SITE_NAME,
         map1: import.meta.env.VITE_APP_MAP1,
         address: import.meta.env.VITE_APP_ADDRESS,
@@ -15,6 +17,20 @@ export default function Footer() {
         linkedin: import.meta.env.VITE_APP_LINKEDIN,
         youtube: import.meta.env.VITE_APP_YOUTUBE
     })
+
+    let SettingStateData = useSelector(state => state.SettingStateData)
+    let dispatch = useDispatch()
+
+    useEffect(() => {
+        (() => {
+            dispatch(getSetting())
+            if (SettingStateData.length) {
+                let items = {}
+                Object.keys(settingData).map((key) => items[key] = SettingStateData[0][key] || settingData[key])
+                setSettingData(items)
+            }
+        })()
+    }, [SettingStateData.length])
     return (
         <>
             <div className="container-fluid bg-dark text-light mt-5 py-5">
@@ -22,23 +38,23 @@ export default function Footer() {
                     <div className="row g-5">
                         <div className="col-lg-3 col-md-6">
                             <h4 className="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4">
-                                {setttingData.siteName}</h4>
+                                {settingData.siteName}</h4>
                             <p className="mb-4">Best Online Shopping Plateform</p>
-                            <a className="mb-2 d-block" href={setttingData.map1} target='_blank'>
+                            <a className="mb-2 d-block" href={settingData.map1} target='_blank'>
                                 <i className="bi bi-geo-alt text-primary me-3"></i>
-                                {setttingData.address}
+                                {settingData.address}
                             </a>
-                            <a className="mb-2 d-block" href={`mailto:${setttingData.email}`} target='_blank'>
+                            <a className="mb-2 d-block" href={`mailto:${settingData.email}`} target='_blank'>
                                 <i className="bi bi-envelope text-primary me-3"></i>
-                                {setttingData.email}
+                                {settingData.email}
                             </a>
-                            <a className="mb-2 d-block" href={`tel:${setttingData.phone}`} target='_blank'>
+                            <a className="mb-2 d-block" href={`tel:${settingData.phone}`} target='_blank'>
                                 <i className="bi bi-telephone text-primary me-3"></i>
-                                {setttingData.phone}
+                                {settingData.phone}
                             </a>
-                            <a className="mb-2 d-block" href={`https://wa.me/${setttingData.whatsapp}`} target='_blank'>
+                            <a className="mb-2 d-block" href={`https://wa.me/${settingData.whatsapp}`} target='_blank'>
                                 <i className="bi bi-whatsapp text-primary me-3"></i>
-                                {setttingData.whatsapp}
+                                {settingData.whatsapp}
                             </a>
                         </div>
                         <div className="col-lg-3 col-md-6">
@@ -74,19 +90,19 @@ export default function Footer() {
                             </form>
                             <h6 className="text-primary text-uppercase mt-4 mb-3">Follow Us</h6>
                             <div className="d-flex">
-                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={setttingData.twitter}>
+                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={settingData.twitter}>
                                     <i className="fab fa-twitter"></i>
                                 </a>
-                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={setttingData.facebook}>
+                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={settingData.facebook}>
                                     <i className="fab fa-facebook-f"></i>
                                 </a>
-                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={setttingData.linkedin}>
+                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={settingData.linkedin}>
                                     <i className="fab fa-linkedin-in"></i>
                                 </a>
-                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={setttingData.youtube}>
+                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href={settingData.youtube}>
                                     <i className="fab fa-youtube"></i>
                                 </a>
-                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle" href={setttingData.instagram}>
+                                <a className="btn btn-lg btn-primary btn-lg-square rounded-circle" href={settingData.instagram}>
                                     <i className="fab fa-instagram"></i>
                                 </a>
                             </div>
@@ -98,7 +114,7 @@ export default function Footer() {
                 <div className="container">
                     <div className="row g-5">
                         <div className="col-md-6 text-center text-md-start">
-                            <p className="mb-md-0">&copy; <Link className="text-primary" to="/">{setttingData.siteName}</Link>. All Rights Reserved.
+                            <p className="mb-md-0">&copy; <Link className="text-primary" to="/">{settingData.siteName}</Link>. All Rights Reserved.
                             </p>
                         </div>
                     </div>

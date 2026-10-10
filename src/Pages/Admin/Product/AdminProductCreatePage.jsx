@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import RichTextEditor from '../../../rte/RichTextEditor';
-import { createStructuredContent } from '../../../rte/richTextEditorBridge';
 
 import AdminSidebar from '../../../Components/Admin/AdminSidebar'
 

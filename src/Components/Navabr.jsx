@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, NavLink } from 'react-router-dom'
 
+import { getSetting } from "../Redux/ActionCreators/SettingActionCreators"
 export default function Navabr() {
-    let [setttingData, setSettingData] = useState({
+    let [settingData, setSettingData] = useState({
         siteName: import.meta.env.VITE_APP_SITE_NAME,
         map1: import.meta.env.VITE_APP_MAP1,
         address: import.meta.env.VITE_APP_ADDRESS,
@@ -15,6 +17,20 @@ export default function Navabr() {
         linkedin: import.meta.env.VITE_APP_LINKEDIN,
         youtube: import.meta.env.VITE_APP_YOUTUBE
     })
+
+    let SettingStateData = useSelector(state => state.SettingStateData)
+    let dispatch = useDispatch()
+
+    useEffect(() => {
+        (() => {
+            dispatch(getSetting())
+            if (SettingStateData.length) {
+                let items = {}
+                Object.keys(settingData).map((key) => items[key] = SettingStateData[0][key] || settingData[key])
+                setSettingData(items)
+            }
+        })()
+    }, [SettingStateData.length])
     return (
         <>
             <div className="container-fluid py-2 border-bottom">
@@ -22,39 +38,39 @@ export default function Navabr() {
                     <div className="row">
                         <div className="col-md-9 col-6 text-center text-lg-start mb-2 mb-lg-0">
                             <div className="d-inline-flex align-items-center">
-                                <a className="text-decoration-none text-body pe-3" href={setttingData.map1} target='_blank'>
+                                <a className="text-decoration-none text-body pe-3" href={settingData.map1} target='_blank'>
                                     <i className="bi bi-geo-alt me-1"></i>
-                                    <span className='d-none d-lg-inline-block'>{setttingData.address}</span>
+                                    <span className='d-none d-lg-inline-block'>{settingData.address}</span>
                                 </a>
-                                <a className="text-decoration-none text-body pe-3" href={`mailto:${setttingData.email}`} target='_blank'>
+                                <a className="text-decoration-none text-body pe-3" href={`mailto:${settingData.email}`} target='_blank'>
                                     <i className="bi bi-envelope me-1"></i>
-                                    <span className='d-none d-lg-inline-block'>{setttingData.email}</span>
+                                    <span className='d-none d-lg-inline-block'>{settingData.email}</span>
                                 </a>
-                                <a className="text-decoration-none text-body pe-3" href={`tel:${setttingData.phone}`} target='_blank'>
+                                <a className="text-decoration-none text-body pe-3" href={`tel:${settingData.phone}`} target='_blank'>
                                     <i className="bi bi-telephone me-1"></i>
-                                    <span className='d-none d-lg-inline-block'>{setttingData.phone}</span>
+                                    <span className='d-none d-lg-inline-block'>{settingData.phone}</span>
                                 </a>
-                                <a className="text-decoration-none text-body pe-3" href={`https://wa.me/${setttingData.whatsapp}`} target='_blank'>
+                                <a className="text-decoration-none text-body pe-3" href={`https://wa.me/${settingData.whatsapp}`} target='_blank'>
                                     <i className="bi bi-whatsapp me-1"></i>
-                                    <span className='d-none d-lg-inline-block'>{setttingData.whatsapp}</span>
+                                    <span className='d-none d-lg-inline-block'>{settingData.whatsapp}</span>
                                 </a>
                             </div>
                         </div>
                         <div className="col-md-3 col-6 text-center text-lg-end">
                             <div className="d-inline-flex align-items-center">
-                                <a className="text-body px-2" href={setttingData.facebook}>
+                                <a className="text-body px-2" href={settingData.facebook}>
                                     <i className="fab fa-facebook-f"></i>
                                 </a>
-                                <a className="text-body px-2" href={setttingData.twitter}>
+                                <a className="text-body px-2" href={settingData.twitter}>
                                     <i className="fab fa-twitter"></i>
                                 </a>
-                                <a className="text-body px-2" href={setttingData.linkedin}>
+                                <a className="text-body px-2" href={settingData.linkedin}>
                                     <i className="fab fa-linkedin-in"></i>
                                 </a>
-                                <a className="text-body px-2" href={setttingData.instagram}>
+                                <a className="text-body px-2" href={settingData.instagram}>
                                     <i className="fab fa-instagram"></i>
                                 </a>
-                                <a className="text-body ps-2" href={setttingData.youtube}>
+                                <a className="text-body ps-2" href={settingData.youtube}>
                                     <i className="fab fa-youtube"></i>
                                 </a>
                             </div>
@@ -67,7 +83,7 @@ export default function Navabr() {
                 <div className="container">
                     <nav className="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
                         <Link to="/" className="navbar-brand">
-                            <h1 className="m-0 text-uppercase text-primary"><i className="bi bi-cart-check plus me-2"></i>{setttingData.siteName}</h1>
+                            <h1 className="m-0 text-uppercase text-primary"><i className="bi bi-cart-check plus me-2"></i>{settingData.siteName}</h1>
                         </Link>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                             <span className="navbar-toggler-icon"></span>

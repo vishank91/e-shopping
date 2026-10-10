@@ -126,7 +126,7 @@ export default function AdminProductPage() {
                                             <td>{item.stock ? "In Stock" : "Out Of Stock"}</td>
                                             <td>{item.stockQuantity}</td>
                                             <td>
-                                                <div style={{ width: 400 }}>
+                                                <div style={{ width: 700 }}>
                                                     {item.pic?.map((item, index) => {
                                                         return <a key={index} href={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item}`} target='_blank'>
                                                             <img src={`${import.meta.env.VITE_APP_IMAGE_SERVER}${item}`} height={70} width={80} className='m-1' alt="Product" />
